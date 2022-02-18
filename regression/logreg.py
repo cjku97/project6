@@ -41,10 +41,6 @@ class BaseRegressor():
             np.random.shuffle(shuffle_arr)
             X_train = shuffle_arr[:, :-1]
             y_train = shuffle_arr[:, -1].flatten()
-            # print("X_train shape")
-            # print(X_train.shape)
-            # print("y_train shape")
-            # print(y_train.shape)
             num_batches = int(X_train.shape[0]/self.batch_size) + 1
             # print("num batches: " + str(num_batches))
             X_batch = np.array_split(X_train, num_batches)
@@ -74,15 +70,9 @@ class BaseRegressor():
                 loss_val = self.loss_function(X_val, y_val)
                 self.loss_history_val.append(loss_val)
             # Defining step size as the average over the past epoch
-            print("number of epochs:")
-            print(len(update_size_epoch))
             prev_update_size = np.mean(np.array(update_size_epoch))
             # Updating iteration number
             iteration += 1
-            print("prev update size: " + str(prev_update_size))
-            print("interation: " + str(iteration))
-            # Check W
-            print(f"w --> {self.W}")
     
     def plot_loss_history(self):
         """
