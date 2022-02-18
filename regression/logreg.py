@@ -107,39 +107,56 @@ class LogisticRegression(BaseRegressor):
         Returns: 
             gradients for given loss function (np.ndarray)
         """
-        pass
+        y_pred = self.make_prediction(X)
+        error = y - y_pred
+        grad = error.dot(X)
+        return(grad)
     
     def loss_function(self, X, y) -> float:
-        """
-        TODO: get y_pred from input X and implement binary cross 
-        entropy loss function. Binary cross entropy loss assumes that 
-        the classification is either 1 or 0, not continuous, making
-        it more suited for (binary) classification.
-
-        Params:
-            X (np.ndarray): feature values
-            y (np.array): labels corresponding to X
-
-        Returns: 
-            average loss 
-        """
-        pass
+    	"""
+    	TODO: get y_pred from input X and implement binary cross entropy loss function.
+    	Binary cross entropy loss assumes that the classification is either 1 or 0, not
+    	continuous, making it more suited for (binary) classification.
+    	
+    	Params:
+    		X (np.ndarray): feature values
+    		y (np.array): labels corresponding to X
+    	
+    	Returns:
+    		average loss
+    	"""
+    	y_pred = self.make_prediction(X)
+    	m = len(y)
+    	error = y - y_pred
+    	# binary cross entropy loss function
+    	bce_loss_sum = 0
+    	for i in range(0, m):
+    		if y[i] == 1:
+    			bce_loss_sum = bce_loss_sum - np.log(y_pred[i])
+    		elif y[i] == 0:
+    			bce_loss_sum = bce_loss_sum - np.log(1 - y_pred[i])
+    		else:
+    			ValueError("classification labels should be 0 or 1")
+    	bce_loss = (1/m)*bce_loss_sum
+    	return(bce_loss)
     
     def make_prediction(self, X) -> np.array:
-        """
-        TODO: implement logistic function to get estimates (y_pred) for input
-        X values. The logistic function is a transformation of the linear model W.T(X)+b 
-        into an "S-shaped" curve that can be used for binary classification
-
-        Params: 
-            X (np.ndarray): Set of feature values to make predictions for
-
-        Returns: 
-            y_pred for given X
-        """
-
-        pass
-
-
-
-    
+    	"""
+    	TODO: implement logistic function to get estimates (y_pred) for input X values.
+    	The logistic function is a transformation of the linear model W.T(X)+b into 
+    	an "S-shaped" curve that can be used for binary classification
+    	
+    	Params:
+    		X (np.ndarray): Set of feature values to make predictions for
+    	
+    	Returns:
+    		y_pred for given X
+    	"""
+    	# adding bias term to X matrix if not already present (do I need this??)
+    	if X.shape[1] == self.num_feats:
+    		X = np.hstack([X, np.ones((X.shape[0], 1))])
+    	# linear model
+    	y_lin = X.dot(self.W).flatten()
+    	# log transformation of linear model
+    	y_pred = 1/(1 + np.exp(-y_lin))
+    	return(y_pred)
