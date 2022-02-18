@@ -41,25 +41,32 @@ class BaseRegressor():
             np.random.shuffle(shuffle_arr)
             X_train = shuffle_arr[:, :-1]
             y_train = shuffle_arr[:, -1].flatten()
+            # print("X_train shape")
+            # print(X_train.shape)
+            # print("y_train shape")
+            # print(y_train.shape)
             num_batches = int(X_train.shape[0]/self.batch_size) + 1
+            # print("num batches: " + str(num_batches))
             X_batch = np.array_split(X_train, num_batches)
             y_batch = np.array_split(y_train, num_batches)
             # Generating list to save the param updates per batch
             update_size_epoch = []
             # Iterating through batches (full for loop is one epoch of training)
-            for X_train, y_train in zip(X_batch, y_batch):
-                # Making prediction on batch
-                y_pred = self.make_prediction(X_train)
+            for X, y in zip(X_batch, y_batch):
+                # Making prediction on batch -- don't need this line?
+                # y_pred = self.make_prediction(X_train)
                 # Calculating loss
-                loss_train = self.loss_function(X_train, y_train)
+                loss_train = self.loss_function(X, y)
                 # Adding current loss to loss history record
                 self.loss_history_train.append(loss_train)
                 # Storing previous weights and bias
                 prev_W = self.W
                 # Calculating gradient of loss function with respect to each parameter
-                grad = self.calculate_gradient(X_train, y_train)
-                # Updating parameters
-                new_W = prev_W - self.lr * grad 
+                grad = self.calculate_gradient(X, y)
+                # Updating parameters -- changed from prev_w - self.lr * grad
+                # to prev_W + self.lr * grad 
+                # (seemed to solve problem of loss getting bigger not smaller)
+                new_W = prev_W + self.lr * grad 
                 self.W = new_W
                 # Saving step size
                 update_size_epoch.append(np.abs(new_W - prev_W))
@@ -67,9 +74,15 @@ class BaseRegressor():
                 loss_val = self.loss_function(X_val, y_val)
                 self.loss_history_val.append(loss_val)
             # Defining step size as the average over the past epoch
+            print("number of epochs:")
+            print(len(update_size_epoch))
             prev_update_size = np.mean(np.array(update_size_epoch))
             # Updating iteration number
             iteration += 1
+            print("prev update size: " + str(prev_update_size))
+            print("interation: " + str(iteration))
+            # Check W
+            print(f"w --> {self.W}")
     
     def plot_loss_history(self):
         """
@@ -88,6 +101,7 @@ class BaseRegressor():
         axs[0].set_ylabel('Train Loss')
         axs[1].set_ylabel('Val Loss')
         fig.tight_layout()
+        plt.show()
         
 
 # import required modules
@@ -109,7 +123,7 @@ class LogisticRegression(BaseRegressor):
         """
         y_pred = self.make_prediction(X)
         error = y - y_pred
-        grad = error.dot(X)
+        grad = X.T.dot(error)
         return(grad)
     
     def loss_function(self, X, y) -> float:
@@ -129,15 +143,8 @@ class LogisticRegression(BaseRegressor):
     	m = len(y)
     	error = y - y_pred
     	# binary cross entropy loss function
-    	bce_loss_sum = 0
-    	for i in range(0, m):
-    		if y[i] == 1:
-    			bce_loss_sum = bce_loss_sum - np.log(y_pred[i])
-    		elif y[i] == 0:
-    			bce_loss_sum = bce_loss_sum - np.log(1 - y_pred[i])
-    		else:
-    			ValueError("classification labels should be 0 or 1")
-    	bce_loss = (1/m)*bce_loss_sum
+    	bce = (y * np.log(y_pred)) + ((1 - y) * np.log(1 - y_pred))
+    	bce_loss = (-1/m) * np.sum(bce)
     	return(bce_loss)
     
     def make_prediction(self, X) -> np.array:
