@@ -24,7 +24,7 @@ To allow for binary classification using logistic regression, we used a sigmoid 
 
 ## Project requirements (10 points total)
 
-[ TODO ] Complete the Logreg class with your implementation of the algorithm (5 points)
+[ DONE? ] Complete the Logreg class with your implementation of the algorithm (5 points)
   * complete the 'calculate_gradient' method
   * complete the 'loss_function' method
   * complete the 'make_prediction' method

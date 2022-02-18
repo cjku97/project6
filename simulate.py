@@ -56,7 +56,7 @@ def main():
 	plt.ylabel('True Positive Rate')
 	plt.title('Receiver operating characteristic')
 	plt.legend(loc="lower right")
-	plt.savefig('Log_ROC')
+	plt.savefig('Simulate_Log_ROC')
 	plt.show()
 
 	
