@@ -31,7 +31,7 @@ To allow for binary classification using logistic regression, we used a sigmoid 
 
   * effective API structure with good documentation and commenting
 
-[ TODO ] Unit Testing (3 points)
+[ DONE ] Unit Testing (3 points)
   * check that fit appropriately trains model & weights get updated
   * check that loss approaches 0
   * check that predict is working 

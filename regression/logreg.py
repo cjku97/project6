@@ -129,6 +129,7 @@ class LogisticRegression(BaseRegressor):
     		average loss
     	"""
     	y_pred = self.make_prediction(X)
+    	m = len(y)
     	# binary cross entropy loss function
     	bce = (y * np.log(y_pred)) + ((1 - y) * np.log(1 - y_pred))
     	bce_loss = (-1/m) * np.sum(bce)

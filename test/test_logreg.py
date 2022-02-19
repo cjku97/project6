@@ -52,28 +52,29 @@ def test_predict():
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
     X_val = sc.transform (X_val)
-
-	# Generate LogisticRegression class instance
-	log_model = logreg.LogisticRegression(num_feats=6, max_iter=20, tol=1e-6, learning_rate=0.001, batch_size=12)
-	# Train model
-	log_model.train_model(X_train, y_train, X_val, y_val)
-	# Evaluate
-	model_prob = log_model.make_prediction(X_val)
-	model_pred = (model_prob >= 0.5) * 1
-	tn, fp, fn, tp = confusion_matrix(y_val, model_pred).ravel()
-	auc_score = roc_auc_score(y_val, model_pred)
-	fpr, tpr, thresholds = roc_curve(y_val, model_prob)
-	
-	# Check that accuracy is acceptable
-	assert (tp + tn)/sum(cm) >= 0.8
-	
-	# Check that AUC is acceptable
-	assert auc_score > 0.8
-	assert auc_score == (tp + tn)/sum(cm)
-	
-	# Check that precision and recall are acceptable
-	assert tp/(tp + fp) > 0.8
-	assert tp/(tp + fn) > 0.8
+    
+    # Generate LogisticRegression class instance
+    log_model = logreg.LogisticRegression(num_feats=6, max_iter=20, tol=1e-6, learning_rate=0.001, batch_size=12)
+    # Train model
+    log_model.train_model(X_train, y_train, X_val, y_val)
+    
+    # Check that loss decreases
+    assert log_model.loss_history_val[0] > log_model.loss_history_val[-1]
+    
+    # Evaluate
+    model_prob = log_model.make_prediction(X_val)
+    model_pred = (model_prob >= 0.5) * 1
+    tn, fp, fn, tp = confusion_matrix(y_val, model_pred).ravel()
+    auc_score = roc_auc_score(y_val, model_pred)
+    fpr, tpr, thresholds = roc_curve(y_val, model_prob)
+    
+    # Check that accuracy is acceptable
+    assert (tp + tn)/(tp + fp + tn + fn) > 0.8
+    # Check that AUC is acceptable
+    assert auc_score > 0.8
+    # Check that precision and recall are acceptable
+    assert tp/(tp + fp) > 0.8
+    assert tp/(tp + fn) > 0.8
 	
 	
 	
