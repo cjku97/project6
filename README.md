@@ -36,7 +36,7 @@ To allow for binary classification using logistic regression, we used a sigmoid 
   * check that loss approaches 0
   * check that predict is working 
 
-[ TODO ] Packaging (2 point)
+[ DONE ] Packaging (2 point)
   * pip installable module
   * github actions (install + pytest)
 

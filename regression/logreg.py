@@ -59,8 +59,7 @@ class BaseRegressor():
                 prev_W = self.W
                 # Calculating gradient of loss function with respect to each parameter
                 grad = self.calculate_gradient(X, y)
-                # Updating parameters -- changed from prev_w - self.lr * grad
-                # to prev_W + self.lr * grad 
+                # Updating parameters -- changed from prev_w - self.lr * grad to prev_W + self.lr * grad 
                 # (seemed to solve problem of loss getting bigger not smaller)
                 new_W = prev_W + self.lr * grad 
                 self.W = new_W
@@ -130,8 +129,6 @@ class LogisticRegression(BaseRegressor):
     		average loss
     	"""
     	y_pred = self.make_prediction(X)
-    	m = len(y)
-    	error = y - y_pred
     	# binary cross entropy loss function
     	bce = (y * np.log(y_pred)) + ((1 - y) * np.log(1 - y_pred))
     	bce_loss = (-1/m) * np.sum(bce)
